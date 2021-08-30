@@ -50,8 +50,8 @@ export class fbMiddleware {
      * @returns The data stored within the document/collection (null if nothing
      *     found/error).
      */
-    public async read_from_firestore<Type>(
-        path: string, contentType: fbStoreContent, debugMessage?: string): Promise<Type | string[] | null> {
+    public async read_from_firestore(
+        path: string, contentType: fbStoreContent, debugMessage?: string): Promise<any> {
         switch (contentType) {
             case fbStoreContent.document:
                 let doc: null | firebase.firestore.DocumentData | undefined = null;
