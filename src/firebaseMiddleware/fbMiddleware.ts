@@ -44,54 +44,63 @@ export class fbMiddleware {
     /*<=================================================================================================>*/
 
     /**
+     * @brief Reads the filename specified in a collection.
+     * @returns Returns the names of the found documents (null if not found/error). 
+     */
+    public async read_coll_from_firestore(
+        path: string, debugMessage?: string): Promise<string[]> {
+        const collection = (await this.firestore.collection(path).get()).docs;
+        if (collection === undefined || collection === null) {
+
+            // Is a debug message specified?
+            if (debugMessage !== undefined) {
+                console.log(debugMessage);
+            }
+            // Is a debug message specified?
+        }
+        let names: Array<string> = new Array<string>();
+        collection.map((name) => names.push(name.id))
+        return names;
+    }
+
+    /**
      * @brief Reads data from the specified
      * location.
-     * * contentType: Specifies whether a list or fields or a list of docments will be returned.
-     * @returns The data stored within the document/collection (null if nothing
-     *     found/error).
+     * @returns The data stored within a document (null if nothing found/error).
      */
-    public async read_from_firestore(
-        path: string, contentType: fbStoreContent, debugMessage?: string): Promise<any> {
-        switch (contentType) {
-            case fbStoreContent.document:
-                let doc: null | firebase.firestore.DocumentData | undefined = null;
-                (await this.firestore.doc(path)
-                    .get()
-                    .then(
-                        (data) => {
-                            // I dont't like this but .data() can also return a
-                            // undefined although nearly every other function returns null.
-                            // I just want to enforce the same type null.
-                            doc = data.data();
-                            if (doc === undefined) {
-                                doc = null;
-                            }
+    public async read_doc_from_firestore<Type>(
+        path: string, debugMessage?: string): Promise<Type | null> {
+        let doc: null | firebase.firestore.DocumentData | undefined = null;
+        (await this.firestore.doc(path)
+            .get()
+            .then(
+                (data) => {
+                    // I dont't like this but .data() can also return a
+                    // undefined although nearly every other function returns null.
+                    // I just want to enforce the same type null.
+                    doc = data.data();
+                    if (doc === undefined) {
+                        doc = null;
+                    }
 
-                            // Is a debug message specified?
-                            if (debugMessage !== undefined) {
-                                console.log(debugMessage);
-                            }
-                            // Is a debug message specified?
-                        })
-                    .catch(
-                        (error) => {
-                            doc = null;
-                            console.log(`Error while attempting to read from ${path}`);
+                    // Is a debug message specified?
+                    if (debugMessage !== undefined) {
+                        console.log(debugMessage);
+                    }
+                    // Is a debug message specified?
+                })
+            .catch(
+                (error) => {
+                    doc = null;
+                    console.log(`Error while attempting to read from ${path}`);
 
-                            // Is a debug message specified?
-                            if (debugMessage !== undefined) {
-                                console.log(debugMessage);
-                            }
-                            // Is a debug message specified?
-                        }));
-                return doc;
-
-            case fbStoreContent.collection:
-                const collection = (await this.firestore.collection(path).get()).docs;
-                let names: Array<string> = new Array<string>();
-                collection.map((name) => names.push(name.id))
-                return names;
-        }
+                    // Is a debug message specified?
+                    if (debugMessage !== undefined) {
+                        console.log(debugMessage);
+                    }
+                    // Is a debug message specified?
+                }));
+        return doc;
     }
 
     /**

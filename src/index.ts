@@ -8,7 +8,7 @@ const fb = new fbMiddleware(firebaseKey);
 // Read data from the firestore
 // Wether you are trying to get a subcolletion or a entire document is up to you
 // to make sure that you make the write call, otherwise it will crash really hard
-fb.read_from_firestore('users', fbStoreContent.collection)
+fb.read_coll_from_firestore('users')
     .then(
         (datasnapshot) => {
             console.log(datasnapshot);
