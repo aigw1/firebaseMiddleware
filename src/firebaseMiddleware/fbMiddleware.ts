@@ -1,5 +1,4 @@
 import firebase from 'firebase';
-import { firebaseKey } from './fbKey';
 
 /**
  * @brief Helper enum for the read from firestore function.
@@ -31,7 +30,7 @@ export class fbMiddleware {
     /*<=================================================================================================>*/
     /*<=================================================================================================>*/
 
-    constructor() {
+    constructor(firebaseKey: Object) {
         firebase.initializeApp(firebaseKey);
         this.firestore = firebase.firestore();
         this.realtimeDB = firebase.database();
@@ -47,12 +46,12 @@ export class fbMiddleware {
     /**
      * @brief Reads data from the specified
      * location.
-     * * contentType: Specifies whether a list or fields or a list fo docments will be returned.
+     * * contentType: Specifies whether a list or fields or a list of docments will be returned.
      * @returns The data stored within the document/collection (null if nothing
      *     found/error).
      */
-    public async read_from_firestore(
-        path: string, contentType: fbStoreContent, debugMessage?: string): Promise<any> {
+    public async read_from_firestore<Type>(
+        path: string, contentType: fbStoreContent, debugMessage?: string): Promise<Type | string[] | null> {
         switch (contentType) {
             case fbStoreContent.document:
                 let doc: null | firebase.firestore.DocumentData | undefined = null;
@@ -103,7 +102,7 @@ export class fbMiddleware {
      * @param path
      * @param object
      * @param debugMessage
-     * @returns Wether the operation was successful.
+     * @returns Whether the operation was successful.
      */
     public async write_to_firestore(path: string, object: Object, debugMessage?: string):
         Promise<boolean> {
@@ -142,7 +141,7 @@ export class fbMiddleware {
      * @param path
      * @param object
      * @param debugMessage
-     * @returns Wether the operation was successful.
+     * @returns Whether the operation was successful.
      */
     public async update_doc_firestore(path: string, object: Object, debugMessage?: string):
         Promise<boolean> {
@@ -180,7 +179,7 @@ export class fbMiddleware {
      * * NOTE: Deleting collection/subcollections is not recommended.
      * @param path
      * @param debugMessage
-     * @returns Wether the operation was successful.
+     * @returns Whether the operation was successful.
      */
     public async delete_firestore(path: string, debugMessage?: string): Promise<boolean> {
         let success: boolean = false;
@@ -253,7 +252,7 @@ export class fbMiddleware {
      * @brief Writes to the realtime database at the specified location.
      * @param path
      * @param debugMessage
-     * @returns Wether the operation was successful.
+     * @returns Whether the operation was successful.
      */
     public async write_database(path: string, object: Object, debugMessage?: string):
         Promise<boolean> {
@@ -289,11 +288,11 @@ export class fbMiddleware {
      * @brief Reads from the realtime database at the specified location.
      * @param path
      * @param debugMessage
-     * @returns The read datab from the specified location (null if not nothing
+     * @returns The read data from the specified location (null if not nothing
      *     found/error).
      */
-    public async read_database(path: string, debugMessage?: string): Promise<any> {
-        let readObject: any;
+    public async read_database<Type>(path: string, debugMessage?: string): Promise<Type | null> {
+        let readObject: Object | null = null;
         (await this.realtimeDB.ref(path)
             .get()
             .then(
@@ -332,7 +331,7 @@ export class fbMiddleware {
      * @brief Deletes an entire object with all underlying data.
      * @param path
      * @param debugMessage
-     * @returns Wether the oepration wass successful.
+     * @returns Whether the oepration wass successful.
      */
     public async delete_database(path: string, debugMessage?: string): Promise<boolean> {
         let success: boolean = false;
@@ -368,7 +367,7 @@ export class fbMiddleware {
      * @param path
      * @param object
      * @param debugMessage
-     * @returns Wether the operation was successful.
+     * @returns Whether the operation was successful.
      */
     public async update_childnodes_database(path: string, object: Object, debugMessage?: string):
         Promise<boolean> {
@@ -409,7 +408,7 @@ export class fbMiddleware {
      * @param path
      * @param object
      * @param debugMessage
-     * @returns Wether the operation was successful.
+     * @returns Whether the operation was successful.
      */
     public async delete_childnodes_database(path: string, object: Object, debugMessage?: string):
         Promise<boolean> {
@@ -558,7 +557,7 @@ export class fbMiddleware {
     /**
      * @brief Signs the currently logged in user out.
      * @param debugMessage
-     * @returns
+     * @returns Whether the operation was successful.
      */
     public async sign_user_out(debugMessage?: string): Promise<boolean> {
         let success: boolean = false;
