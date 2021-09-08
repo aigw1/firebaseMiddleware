@@ -594,4 +594,35 @@ export class fbMiddleware {
                 }));
         return success;
     }
+
+    /**
+    * @brief Deletes the passed in user from the firebase.
+    * @param debugMessage
+    * @returns Whether the operation was successful.
+    */
+    public async delete_user(user: firebase.User, debugMessage?: string): Promise<boolean> {
+        let success: boolean = false;
+        (await user.delete().then(
+            () => {
+                success = true;
+
+                // Is a debug message specified?
+                if (debugMessage !== undefined) {
+                    console.log(debugMessage);
+                }
+                // Is a debug message specified?
+            })
+            .catch(
+                (error) => {
+                    success = false;
+                    console.log(error);
+
+                    // Is a debug message specified?
+                    if (debugMessage !== undefined) {
+                        console.log(debugMessage);
+                    }
+                    // Is a debug message specified?
+                }));
+        return success;
+    }
 };
