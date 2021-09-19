@@ -1,14 +1,6 @@
 import firebase from 'firebase';
 
 /**
- * @brief Helper enum for the read from firestore function.
- */
-export enum fbStoreContent {
-    document = 1,
-    collection,
-}
-
-/**
  * @brief Firebase middleware
  * * API Key has to be passed in via the fbKey.ts
  * file
