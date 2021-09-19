@@ -625,4 +625,50 @@ export class fbMiddleware {
                 }));
         return success;
     }
+
+    /**
+     * @param debugMessage
+     * @returns Whether the operation was successful.
+     * @brief Deletes the user matching the emails and password.
+     * @Important If you were loggend with another user you have to login manually afterwards again.
+    */
+    public async delete_user_email_pw(email: string, inPassword: string, debugMessage?: string): Promise<boolean> {
+        let success: boolean = false;
+
+        // Sign out the currently logged in user.
+        this.auth.signOut();
+
+        //Sign in the user to be deleted.
+        const credentials = await this.auth.signInWithEmailAndPassword(email, inPassword);
+
+        // Was the sign in successful?
+        if (credentials != null && credentials.user != null) {
+            (await credentials.user.delete()
+                .then(
+                    () => {
+                        success = true;
+
+                        // Is a debug message specified?
+                        if (debugMessage !== undefined) {
+                            console.log(debugMessage);
+                        }
+                        // Is a debug message specified?
+                    }
+                )
+                .catch(
+                    (error) => {
+                        success = false;
+                        console.log(error);
+
+                        // Is a debug message specified?
+                        if (debugMessage !== undefined) {
+                            console.log(debugMessage);
+                        }
+                        // Is a debug message specified?
+                    }));
+        }
+        // Was the sign in successful?
+
+        return success;
+    }
 };
